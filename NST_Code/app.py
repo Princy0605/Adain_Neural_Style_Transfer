@@ -105,6 +105,8 @@ def index():
                 content_filename = secure_filename(form.content.data.filename)
                 form.content.data.save(os.path.join(app.config['UPLOAD_FOLDER'], content_filename))
                 form.content_path.data = content_filename
+            else:
+                error = 'Invalid content image format.'
         else:
             content_filename = form.content_path.data
 
@@ -113,8 +115,16 @@ def index():
                 style_filename = secure_filename(form.style.data.filename)
                 form.style.data.save(os.path.join(app.config['UPLOAD_FOLDER'], style_filename))
                 form.style_path.data = style_filename
+            else: 
+                error = 'Invalid style image format.'
         else:
             style_filename = form.style_path.data
+
+            
+        if not content_filename:
+            error = 'Please upload content image'
+        elif not style_filename:
+            error = 'Please upload style image'
 
         if content_filename and style_filename:
             content_path = os.path.join(app.config['UPLOAD_FOLDER'], content_filename)
@@ -134,11 +144,11 @@ def index():
                 result_image = result_filename
             except Exception as e:
                 error = str(e)
-    else:
-        if not content_filename:
-            error = 'Please upload content image'
-        if not style_filename:
-            error = 'Please upload style image'
+    # else:
+    #     if not content_filename:
+    #         error = 'Please upload content image'
+    #     if not style_filename:
+    #         error = 'Please upload style image'
 
     return render_template('index.html', form=form, result_image=result_image, content_image=content_filename,
                            style_image=style_filename, error=error)
